@@ -1,0 +1,9 @@
+	{
+	    "global": {
+	      "port": 8090,
+	      "url": "http://localhost",
+	      "mongodbUrl": "mongodb://adminuser:password123@mongo.default.svc.cluster.local:27017",
+	      "mongodbName": "mymongo",
+	      "mongodbUserCollection": "jsonTestCollection"
+	    }
+	}  

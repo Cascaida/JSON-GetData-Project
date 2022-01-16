@@ -1,0 +1,54 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: node-web-app
+  labels:
+    app: node-web-app
+spec:
+  revisionHistoryLimit: 1
+  replicas: 2
+  selector:
+    matchLabels:
+      app: node-web-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: node-web-app
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: node-web-app
+        image: <your-Docker-registry-URL>/node-web-app:v1
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            memory: "1Gi"
+        ports:
+        - containerPort: 8090
+          name: nodeport
+        livenessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: 8090
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+          periodSeconds: 10
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: 8090
+          timeoutSeconds: 1
+          periodSeconds: 10
+          initialDelaySeconds: 10
+      imagePullSecrets:
+      - name: regcred
+      terminationGracePeriodSeconds: 30        
